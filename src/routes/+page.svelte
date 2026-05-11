@@ -16,6 +16,8 @@
   import type { CellRow } from '$lib/MapView.svelte';
   import { cellToLatLng } from 'h3-js';
   import ExploreTab from '$lib/ExploreTab.svelte';
+  import obislogo from '$lib/images/logo_simple.png'
+  import ioclogo from '$lib/images/ioc_logo_black_2.svg'
 
   let MapView: any = $state(null);
 
@@ -613,6 +615,11 @@
       </div>
     {/if}
 
+    <div class="logo-footer">
+      <img src={ioclogo} alt="" style="height: 30px;">
+      <img src={obislogo} alt="" style="height: 27px;">
+    </div>
+
     <div class="sidebar-footer">
       <a href="/docs">Documentation</a> ·
       <a href="https://obis.org" target="_blank" rel="noopener">obis.org</a> ·
@@ -1053,6 +1060,12 @@
   }
   .sidebar-footer a { color:#94a3b8; text-decoration:none; }
   .sidebar-footer a:hover { color:#0854a8; }
+
+  .logo-footer {
+    display: flex;
+    gap: .8rem;
+    padding: .85rem 1rem;
+  }
 
   /* ── Main ──────────────────────────────────────────────────────────── */
   .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
