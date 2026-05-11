@@ -13,6 +13,7 @@
  */
 
 import * as duckdb from '@duckdb/duckdb-wasm';
+import { asset } from '$app/paths';
 
 export const db = $state({
   status:        'idle' as 'idle' | 'booting' | 'ready' | 'error',
@@ -113,7 +114,7 @@ async function _prefetchSpecies() {
 export async function loadOverview(): Promise<{ cell: string; total_species: number }[]> {
   if (!connection || !dbInstance) throw new Error('DuckDB not ready');
 
-  const resp = await fetch('/overview_h3_4.parquet');
+  const resp = await fetch(asset('/overview_h3_4.parquet'));
   if (!resp.ok) throw new Error(`Could not load overview parquet (HTTP ${resp.status}). Have you run generate_overview.py?`);
   const buf = await resp.arrayBuffer();
 
