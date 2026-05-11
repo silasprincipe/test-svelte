@@ -429,9 +429,12 @@
                 target="_blank"
                 rel="noopener"
               >
-                <em>{taxon.scientificName}</em>
-                <span class="taxon-id">AphiaID {taxon.taxonID}</span>
-                <span class="taxon-arrow">↗</span>
+                <b>View on OBIS</b>
+                <!-- <em>{taxon.scientificName}</em> -->
+                <div class="display: inline-flex;">
+                  <span class="taxon-id">AphiaID {taxon.taxonID}</span>
+                  <span class="taxon-arrow">↗</span>
+                </div>
               </a>
             {:else if !taxonLoading}
               <span class="taxon-not-found">Species not found in OBIS</span>
@@ -884,7 +887,8 @@
 
   .obis-species-link {
     display: inline-flex;
-    align-items: center;
+    /* align-items: center; */
+    justify-content: space-between;
     gap: .35rem;
     font-size: .68rem;
     color: #0854a8;
