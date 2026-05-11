@@ -356,7 +356,7 @@
 
     <!-- Brand + nav -->
     <div class="brand">
-      <span class="logo">◈ OBIS Explorer</span>
+      <span class="logo"><span style="font-weight: bold;">speciesgrids</span> explorer</span>
       <a href="/docs" class="docs-link">Docs ↗</a>
     </div>
 
@@ -752,7 +752,7 @@
     padding:.85rem 1rem .7rem;
     border-bottom:1px solid #e2e8f0;
   }
-  .logo { font-size:.9rem; font-weight:600; color:#0854a8; letter-spacing:.02em; }
+  .logo { font-size:.9rem; color:#0854a8; letter-spacing:.02em; }
   .docs-link { font-size:.62rem; color:#94a3b8; text-decoration:none; }
   .docs-link:hover { color:#0854a8; }
 

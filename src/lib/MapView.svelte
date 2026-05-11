@@ -254,6 +254,7 @@
   <div class="veil">
     <div class="spinner"></div>
     <span>Querying S3 parquet…</span>
+    <span>It's all running in your browser. No <b>server</b>, just a <a href="https://duckdb.org/docs/current/clients/wasm/overview" style="text-decoration: none; font-weight: bold; color: #0854a8;">DuckDB</a> WASM client.</span>
   </div>
 {/if}
 
