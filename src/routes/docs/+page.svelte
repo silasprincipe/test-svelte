@@ -1,5 +1,5 @@
 <script lang="ts">
-  export const prerender = true;
+  // export const prerender = true;
   // No logic needed — pure content page
 </script>
 

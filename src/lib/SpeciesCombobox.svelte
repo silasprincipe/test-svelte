@@ -10,25 +10,28 @@
    * This component just filters it locally with String.includes().
    */
   import { db } from '$lib/db.svelte';
-
+ 
   let { value = $bindable(''), onSelect }: {
     value: string;
     onSelect?: (species: string | null) => void;
   } = $props();
-
+ 
   let inputText    = $state(value);
+  let filterText   = $state('');   // debounced — only updated after user pauses typing
   let showDropdown = $state(false);
   let activeIdx    = $state(-1);
-
-  // Client-side filter — very fast since it's just Array.filter + String.includes
-  const matches = $derived(() => {
-    const term = inputText.trim().toLowerCase();
+  let debounceTimer: ReturnType<typeof setTimeout>;
+ 
+  // matches derives from filterText (debounced), not inputText (live keystroke).
+  // This prevents the 256k-entry filter from running on every character typed.
+  const matches = $derived.by(() => {
+    const term = filterText.trim().toLowerCase();
     if (!term || term.length < 2) return [];
     return db.speciesList
       .filter(s => s.toLowerCase().includes(term))
-      .slice(0, 30); // cap at 30 results in the dropdown
+      .slice(0, 30);
   });
-
+ 
   function select(species: string) {
     inputText    = species;
     value        = species;
@@ -36,23 +39,29 @@
     activeIdx    = -1;
     onSelect?.(species);
   }
-
+ 
   function clear() {
     inputText    = '';
     value        = '';
     showDropdown = false;
     onSelect?.(null);
   }
-
+ 
   function onInput() {
     showDropdown = true;
     activeIdx    = -1;
-    // If the user cleared the field, emit null
-    if (!inputText.trim()) onSelect?.(null);
+    if (!inputText.trim()) {
+      filterText = '';
+      onSelect?.(null);
+      return;
+    }
+    // Debounce: only run the expensive filter after 200ms pause in typing
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => { filterText = inputText; }, 200);
   }
-
+ 
   function onKeydown(e: KeyboardEvent) {
-    const m = matches();
+    const m = matches;
     if (!showDropdown || !m.length) {
       if (e.key === 'Enter' && inputText.trim()) select(inputText.trim());
       return;
@@ -63,14 +72,14 @@
     if (e.key === 'Escape')    { showDropdown = false; }
   }
 </script>
-
+ 
 <div class="combo">
-  <div class="input-wrap" class:open={showDropdown && matches().length > 0}>
+  <div class="input-wrap" class:open={showDropdown && matches.length > 0}>
     <input
       bind:value={inputText}
       oninput={onInput}
       onkeydown={onKeydown}
-      onfocus={() => { if (matches().length) showDropdown = true; }}
+      onfocus={() => { if (matches.length) showDropdown = true; }}
       onblur={() => setTimeout(() => { showDropdown = false; }, 160)}
       placeholder={db.speciesLoaded ? 'Search species…' : 'Loading species list…'}
       disabled={!db.speciesLoaded}
@@ -83,10 +92,10 @@
       <span class="loading-dot">…</span>
     {/if}
   </div>
-
-  {#if showDropdown && matches().length > 0}
+ 
+  {#if showDropdown && matches.length > 0}
     <ul class="dropdown" role="listbox">
-      {#each matches() as s, i}
+      {#each matches as s, i}
         <li
           class="option"
           class:active={i === activeIdx}
@@ -97,7 +106,7 @@
           <em>{s}</em>
         </li>
       {/each}
-      {#if matches().length === 30}
+      {#if matches.length === 30}
         <li class="more">…type more to narrow results</li>
       {/if}
     </ul>
