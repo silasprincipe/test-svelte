@@ -27,7 +27,8 @@ const config = {
 			fallback: '404.html'
 		}),
 		paths: {
-			base: process.argv.includes('dev') ? '' : "/test-svelte"
+			base: process.env.NODE_ENV === "production" ? "/test-svelte" : "",
+			//base: process.argv.includes('dev') ? '' : "/test-svelte"
 		}
 	}
 };

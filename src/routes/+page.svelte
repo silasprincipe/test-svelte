@@ -18,6 +18,7 @@
   import ExploreTab from '$lib/ExploreTab.svelte';
   import obislogo from '$lib/images/logo_simple.png'
   import ioclogo from '$lib/images/ioc_logo_black_2.svg'
+  import { resolve } from '$app/paths';
 
   let MapView: any = $state(null);
 
@@ -359,7 +360,7 @@
     <!-- Brand + nav -->
     <div class="brand">
       <span class="logo"><span style="font-weight: bold;">speciesgrids</span> explorer</span>
-      <a href="/docs" class="docs-link">Docs ↗</a>
+      <a href={resolve(`/docs/`)} class="docs-link">Docs ↗</a>
     </div>
 
     <!-- DuckDB status -->
@@ -624,7 +625,7 @@
     </div>
 
     <div class="sidebar-footer">
-      <a href="/docs">Documentation</a> ·
+      <a href={resolve(`/docs/`)}>Documentation</a> ·
       <a href="https://obis.org" target="_blank" rel="noopener">obis.org</a> ·
       <a href="https://github.com/iobis/speciesgrids" target="_blank" rel="noopener">GitHub</a>
     </div>

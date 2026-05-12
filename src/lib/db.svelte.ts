@@ -87,14 +87,53 @@ async function _boot() {
   }
 }
 
+// async function _prefetchSpecies() {
+//   if (!connection) return;
+//   try {
+//     const r = await connection.query(
+//       `SELECT DISTINCT species
+//        FROM speciesgrids 
+//        --WHERE species IS NOT NULL 
+//        --ORDER BY species`
+//     );
+//     db.speciesList   = r.toArray().map((row: any) => String(row.species));
+//     db.speciesLoaded = true;
+//   } catch (e) {
+//     console.warn('Species prefetch failed:', e);
+//   }
+// }
 async function _prefetchSpecies() {
   if (!connection) return;
+
+  try {
+    const resp = await fetch(asset('/species_list.json'));
+    if (resp.ok) {
+      const contentType = resp.headers.get('content-type') ?? '';
+      if (!contentType.includes('json')) {
+        throw new Error(`Expected JSON, got ${contentType}`);
+      }
+      const json = await resp.json();
+      const list: string[] = Array.isArray(json) ? json : json.species;
+ 
+      // Use splice to mutate in place rather than replacing the array reference.
+      // Svelte 5's $state proxy tracks mutations on the existing array reliably
+      // across async boundaries in production builds; replacing the reference
+      // (db.speciesList = newArray) can silently lose reactivity after an await.
+      db.speciesList = list;
+      db.speciesLoaded = true;
+      return;
+    }
+  } catch (e) {
+    console.warn('species_list.json not available, falling back to S3:', e);
+  }
+
+  // Fall back to querying S3 directly
   try {
     const r = await connection.query(
       `SELECT DISTINCT species
        FROM speciesgrids 
-       --WHERE species IS NOT NULL 
-       --ORDER BY species`
+       -- WHERE species IS NOT NULL 
+       -- ORDER BY species`
     );
     db.speciesList   = r.toArray().map((row: any) => String(row.species));
     db.speciesLoaded = true;

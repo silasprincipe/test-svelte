@@ -8,3 +8,8 @@ export const prerender = true;
 // Browser-only code (DuckDB, MapLibre, Deck.gl) is already safely guarded
 // with `if (!browser)` checks and `onMount()` calls throughout the app.
 export const ssr = false;
+
+// 'always' generates docs/index.html instead of docs.html.
+// GitHub Pages serves /docs/ correctly from docs/index.html,
+// whereas docs.html requires the 404.html fallback to catch /docs requests.
+export const trailingSlash = 'always';
